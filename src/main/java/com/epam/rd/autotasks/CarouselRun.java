@@ -1,35 +1,60 @@
 package com.epam.rd.autotasks;
 
+
 public class CarouselRun {
 
-    protected final int[] array = DecrementingCarousel.carousel.clone();
-    protected int position = 0;
+    private int[] array;
+    private int capacity;
+    private int currentIndex = 0;
+    private int type = 0;
+    private int circle = 1;
+
+    public CarouselRun(DecrementingCarousel dc, int type) {
+        array = dc.array;
+        capacity = dc.maxIndex;
+        this.type = type;
+    }
+
 
     public int next() {
-        int beforeDecreasing;
-        int decrement=0;
-        if (isFinished())
-
+        if (capacity == 0 || isFinished()) {
             return -1;
-        else {
-            beforeDecreasing = array[position];
-            array[position] -= decrement;
-            do {
-                position++;
-                if (position == array.length) {
-                    decrement++;
-                    position = 0;
-                }
-            } while ((array[position] <= 0) && !isFinished());
         }
-        return beforeDecreasing;
+        while (array[currentIndex] == 0) {
+            currentIndex++;
+            currentIndex%=capacity;
+            if(currentIndex==0) {
+                circle++;
+            }
+        }
+        int a = array[currentIndex];
+        switch (type) {
+            case 0:
+                array[currentIndex]--;
+                break;
+            case 1:
+                array[currentIndex] -= circle;
+                if (array[currentIndex] < 0) {
+                    array[currentIndex] = 0;
+                }
+                break;
+        }
+        currentIndex++;
+        currentIndex%=capacity;
+        if (currentIndex == 0) {
+            circle++;
+        }
+        return a;
     }
 
     public boolean isFinished() {
-        for (int el : array)
-            if (el > 0)
+        for(int i = 0; i < capacity; i++) {
+            if(array[i] > 0) {
                 return false;
+            }
+        }
         return true;
     }
 
 }
+
